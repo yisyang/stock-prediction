@@ -1,0 +1,17 @@
+# IDE
+.idea
+
+# Data
+data/*
+!data/train_x_30_6.csv
+!data/train_y_5.csv
+!data/val_x_30_6.csv
+!data/val_y_5.csv
+
+# Model weights
+checkpoints
+
+# Cache
+.DS_Store
+__pycache__
+*.pyc
