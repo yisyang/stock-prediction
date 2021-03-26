@@ -3,6 +3,18 @@
 This is a toy project by a human learning to do some practical machine-learning.
 The model used is just a simple LSTM and a Dense layer.
 
+
+## Process
+
+The initial implementation splits the data by stock_id into training and validation batches.
+The losses decreased nicely, but the resulting model is not good at predicting real world data.
+
+The current implementation splits the data by time, reserving the first N timesteps for training, and the rest for validation.
+The result is that the training losses decrease nicely, and the validation losses stayed the same.
+
+In other words... a nice exercise but it DOES NOT WORK at predicting real world data.
+
+
 ## Preparing data
 
 Input data should be in the format of:

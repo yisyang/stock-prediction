@@ -178,27 +178,27 @@ def generate_rows_from_buffer(x_buffer, y_buffer, x_seq_length, y_seq_length):
     # Not enough items in buffer.
     if n < total_seq_length:
         yield None, None, None
-
-    # x: (n, x_seq_length, x_features)
-    # Each output row contains x_seq_length days of data.
-    # Offset by OFFSET_SEQ_DAYS days.
-    # begin_price,end_price,low_price,high_price,b_large_volume,b_big_volume,b_middle_volume,b_small_volume,s_large_volume,s_big_volume,s_middle_volume,s_small_volume
-
-    # y: (n, y_seq_length)
-    # Each output row contains delta_end_price for the next y_seq_length days.
-
-    if y_seq_length == 0:
-        # For prediction, output only the latest x_seq_length data.
-        yield [i for il in x_buffer[-total_seq_length:] for i in il], [], False
     else:
-        # Split x/y buffer, reserve the final data points for validation.
-        n_rows = (n - total_seq_length) // OFFSET_SEQ_DAYS + 1  # n=40, tsl=35, xsl=30, offset=5, n_rows=2
-        n_val = VALIDATION_RATIO * n_rows                       # n_train = 2
-        for i in reversed(range(n_rows)):                       # i = 1, 0
-            a = n - total_seq_length - i*OFFSET_SEQ_DAYS        # a = 0, 5
-            b = a + x_seq_length                                # b = 30, 35
-            c = b + OFFSET_SEQ_DAYS                             # c = 35, 40
-            yield [i for il in x_buffer[a:b] for i in il], y_buffer[b:c], i < n_val
+        # x: (n, x_seq_length, x_features)
+        # Each output row contains x_seq_length days of data.
+        # Offset by OFFSET_SEQ_DAYS days.
+        # begin_price,end_price,low_price,high_price,b_large_volume,b_big_volume,b_middle_volume,b_small_volume,s_large_volume,s_big_volume,s_middle_volume,s_small_volume
+
+        # y: (n, y_seq_length)
+        # Each output row contains delta_end_price for the next y_seq_length days.
+
+        if y_seq_length == 0:
+            # For prediction, output only the latest x_seq_length data.
+            yield [i for il in x_buffer[-total_seq_length:] for i in il], [], False
+        else:
+            # Split x/y buffer, reserve the final data points for validation.
+            n_rows = (n - total_seq_length) // OFFSET_SEQ_DAYS + 1  # n=40, tsl=35, xsl=30, offset=5, n_rows=2
+            n_val = VALIDATION_RATIO * n_rows                       # n_train = 2
+            for i in reversed(range(n_rows)):                       # i = 1, 0
+                a = n - total_seq_length - i*OFFSET_SEQ_DAYS        # a = 0, 5
+                b = a + x_seq_length                                # b = 30, 35
+                c = b + OFFSET_SEQ_DAYS                             # c = 35, 40
+                yield [i for il in x_buffer[a:b] for i in il], y_buffer[b:c], i < n_val
 
 
 def generate_train_val_rows(data, x_seq_length, x_features, y_seq_length):
